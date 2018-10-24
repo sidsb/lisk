@@ -660,13 +660,13 @@ TransactionPool.prototype.undoUnconfirmedList = function(cb, tx) {
 						ids.push(transaction.id);
 						modules.transactions.undoUnconfirmed(
 							transaction,
-							undoUnconfirmErr => {
+							undoUnconfirmedErr => {
 								// Remove transaction from unconfirmed, queued and multisignature lists
 								self.removeUnconfirmedTransaction(transaction.id);
-								if (undoUnconfirmErr) {
+								if (undoUnconfirmedErr) {
 									library.logger.error(
 										`Failed to undo unconfirmed transaction: ${transaction.id}`,
-										undoUnconfirmErr
+										undoUnconfirmedErr
 									);
 									return setImmediate(eachSeriesCb);
 								}
@@ -675,13 +675,13 @@ TransactionPool.prototype.undoUnconfirmedList = function(cb, tx) {
 								self.processUnconfirmedTransaction(
 									transaction,
 									false,
-									processUnconfirmErr => {
-										if (processUnconfirmErr) {
+									processUnconfirmedErr => {
+										if (processUnconfirmedErr) {
 											library.logger.debug(
 												`Failed to queue transaction back after successful undo unconfirmed: ${
 													transaction.id
 												}`,
-												processUnconfirmErr
+												processUnconfirmedErr
 											);
 										}
 										return setImmediate(eachSeriesCb);
@@ -949,13 +949,13 @@ __private.applyUnconfirmedList = function(transactions, cb, tx) {
 							modules.transactions.applyUnconfirmed(
 								transaction,
 								sender,
-								applyUnconfirmErr => {
-									if (applyUnconfirmErr) {
+								applyUnconfirmedErr => {
+									if (applyUnconfirmedErr) {
 										library.logger.error(
 											`Failed to apply unconfirmed transaction: ${
 												transaction.id
 											}`,
-											applyUnconfirmErr
+											applyUnconfirmedErr
 										);
 										self.removeQueuedTransaction(transaction.id);
 										return setImmediate(eachSeriesCb);
@@ -1060,13 +1060,13 @@ __private.expireAndUndoUnconfirmedTransactions = (transactions, cb) => {
 			if (!__private.isExpired(transaction)) {
 				return setImmediate(eachSeriesCb);
 			}
-			modules.transactions.undoUnconfirmed(transaction, undoUnconfirmErr => {
-				if (undoUnconfirmErr) {
+			modules.transactions.undoUnconfirmed(transaction, undoUnconfirmedErr => {
+				if (undoUnconfirmedErr) {
 					library.logger.error(
 						`Failed to undo unconfirmed transaction: ${transaction.id}`,
-						undoUnconfirmErr
+						undoUnconfirmedErr
 					);
-					return setImmediate(eachSeriesCb, undoUnconfirmErr);
+					return setImmediate(eachSeriesCb, undoUnconfirmedErr);
 				}
 				// Remove transaction from unconfirmed, queued and multisignature lists
 				self.removeUnconfirmedTransaction(transaction.id);

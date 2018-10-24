@@ -252,11 +252,11 @@ __private.receiveTransaction = function(
 		modules.transactions.processUnconfirmedTransaction(
 			transaction,
 			true,
-			processUnconfirmErr => {
-				if (processUnconfirmErr) {
+			processUnconfirmedErr => {
+				if (processUnconfirmedErr) {
 					library.logger.debug(
 						['Transaction', id].join(' '),
-						processUnconfirmErr.toString()
+						processUnconfirmedErr.toString()
 					);
 					if (transaction) {
 						library.logger.debug('Transaction', transaction);
@@ -264,7 +264,7 @@ __private.receiveTransaction = function(
 
 					return setImmediate(
 						balancesSequenceCb,
-						processUnconfirmErr.toString()
+						processUnconfirmedErr.toString()
 					);
 				}
 				return setImmediate(balancesSequenceCb, null, transaction.id);

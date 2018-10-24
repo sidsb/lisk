@@ -709,33 +709,28 @@ TransactionPool.prototype.undoUnconfirmedList = function(cb, tx) {
  * @returns {SetImmediate} error, ids[]
  */
 TransactionPool.prototype.expireTransactions = function(cb) {
-	library.balancesSequence.add(
-		balancesSequenceCb => {
-			async.waterfall(
-				[
-					function(waterfallCb) {
-						__private.expireAndUndoUnconfirmedTransactions(
-							self.getUnconfirmedTransactionList(true),
-							waterfallCb
-						);
-					},
-					function(waterfallCb) {
-						__private.expireTransactions(
-							self.getQueuedTransactionList(true),
-							waterfallCb
-						);
-					},
-					function(waterfallCb) {
-						__private.expireTransactions(
-							self.getMultisignatureTransactionList(true),
-							waterfallCb
-						);
-					},
-				],
-				balancesSequenceCb
-			);
-		},
-		err => setImmediate(cb, err)
+	async.waterfall(
+		[
+			function(waterfallCb) {
+				__private.expireTransactions(
+					self.getUnconfirmedTransactionList(true),
+					waterfallCb
+				);
+			},
+			function(waterfallCb) {
+				__private.expireTransactions(
+					self.getQueuedTransactionList(true),
+					waterfallCb
+				);
+			},
+			function(waterfallCb) {
+				__private.expireTransactions(
+					self.getMultisignatureTransactionList(true),
+					waterfallCb
+				);
+			},
+		],
+		() => setImmediate(cb)
 	);
 };
 
